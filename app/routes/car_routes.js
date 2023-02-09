@@ -4,7 +4,7 @@ const express = require('express')
 const passport = require('passport')
 
 // pull in Mongoose model for examples
-const Pet = require('../models/pet')
+const Car = require('../models/car')
 
 // this is a collection of methods that help us detect situations when we need
 // to throw a custom error
@@ -28,44 +28,44 @@ const requireToken = passport.authenticate('bearer', { session: false })
 const router = express.Router()
 
 // INDEX
-// GET /pets
+// GET /cars
 // requireToken is middleware that protects any route it's a part of.
-router.get('/pets', requireToken, (req, res, next) => {
-	Pet.find()
-		.then((pets) => {
-			// `pets` will be an array of Mongoose documents
+router.get('/cars', requireToken, (req, res, next) => {
+	Car.find()
+		.then((cars) => {
+			// `cars` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
 			// apply `.toObject` to each one
-			return pets.map((pet) => pet.toObject())
+			return cars.map((car) => car.toObject())
 		})
-		// respond with status 200 and JSON of the pets
-		.then((pets) => res.status(200).json({ pets: pets }))
+		// respond with status 200 and JSON of the cars
+		.then((cars) => res.status(200).json({ cars: cars }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
 
 // SHOW
-// GET /pets/5a7db6c74d55bc51bdf39793
-router.get('/pets/:id', requireToken, (req, res, next) => {
+// GET /cars/5a7db6c74d55bc51bdf39793
+router.get('/cars/:id', requireToken, (req, res, next) => {
 	// req.params.id will be set based on the `:id` in the route
-	Pet.findById(req.params.id)
+	Car.findById(req.params.id)
 		.then(handle404)
-		// if `findById` is succesful, respond with 200 and "pet" JSON
-		.then((pet) => res.status(200).json({ pet: pet.toObject() }))
+		// if `findById` is succesful, respond with 200 and "car" JSON
+		.then((car) => res.status(200).json({ car: car.toObject() }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
 })
 
 // CREATE
-// POST /pets
-router.post('/pets', requireToken, (req, res, next) => {
+// POST /cars
+router.post('/cars', requireToken, (req, res, next) => {
 	// set owner of new example to be current user
-	req.body.pet.owner = req.user.id
+	req.body.car.owner = req.user.id
 
-	Pet.create(req.body.pet)
-		// respond to succesful `create` with status 201 and JSON of new "pet"
-		.then((pet) => {
-			res.status(201).json({ pet: pet.toObject() })
+	Car.create(req.body.car)
+		// respond to succesful `create` with status 201 and JSON of new "car"
+		.then((car) => {
+			res.status(201).json({ car: car.toObject() })
 		})
 		// if an error occurs, pass it off to our error handler
 		// the error handler needs the error message and the `res` object so that it
@@ -74,21 +74,21 @@ router.post('/pets', requireToken, (req, res, next) => {
 })
 
 // UPDATE
-// PATCH /pets/5a7db6c74d55bc51bdf39793
-router.patch('/pets/:id', requireToken, removeBlanks, (req, res, next) => {
+// PATCH /cars/5a7db6c74d55bc51bdf39793
+router.patch('/cars/:id', requireToken, removeBlanks, (req, res, next) => {
 	// if the client attempts to change the `owner` property by including a new
 	// owner, prevent that by deleting that key/value pair
-	delete req.body.pet.owner
+	delete req.body.car.owner
 
-	Pet.findById(req.params.id)
+	Car.findById(req.params.id)
 		.then(handle404)
-		.then((pet) => {
+		.then((car) => {
 			// pass the `req` object and the Mongoose record to `requireOwnership`
 			// it will throw an error if the current user isn't the owner
-			requireOwnership(req, pet)
+			requireOwnership(req, car)
 
 			// pass the result of Mongoose's `.update` to the next `.then`
-			return pet.updateOne(req.body.pet)
+			return car.updateOne(req.body.car)
 		})
 		// if that succeeded, return 204 and no JSON
 		.then(() => res.sendStatus(204))
@@ -97,15 +97,15 @@ router.patch('/pets/:id', requireToken, removeBlanks, (req, res, next) => {
 })
 
 // DESTROY
-// DELETE /pets/5a7db6c74d55bc51bdf39793
-router.delete('/pets/:id', requireToken, (req, res, next) => {
-	Pet.findById(req.params.id)
+// DELETE /cars/5a7db6c74d55bc51bdf39793
+router.delete('/cars/:id', requireToken, (req, res, next) => {
+	Car.findById(req.params.id)
 		.then(handle404)
-		.then((pet) => {
-			// throw an error if current user doesn't own `pet`
-			requireOwnership(req, pet)
-			// delete the pet ONLY IF the above didn't throw
-			pet.deleteOne()
+		.then((car) => {
+			// throw an error if current user doesn't own `car`
+			requireOwnership(req, car)
+			// delete the car ONLY IF the above didn't throw
+			car.deleteOne()
 		})
 		// send back 204 and no content if the deletion succeeded
 		.then(() => res.sendStatus(204))

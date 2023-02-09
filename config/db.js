@@ -1,8 +1,8 @@
 'use strict'
 
 // creating a base name for the mongodb
-// REPLACE THE STRING WITH YOUR OWN DATABASE NAME
-const mongooseBaseName = 'Pets'
+
+const mongooseBaseName = 'Cars'
 
 // create the mongodb uri for development and test
 const database = {

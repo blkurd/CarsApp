@@ -1,24 +1,18 @@
 const mongoose = require('mongoose')
 
-// PET -> has an owner, a name, a type, age, adoptable(bool)
-// eventually each pet will have a toys array
-// this model will use virtuals to produce additional data on each pet
 
-const petSchema = new mongoose.Schema(
+const carSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
 			required: true,
 		},
-		type: {
-			type: String,
-			required: true,
-		},
-		age: {
+		
+		model: {
 			type: Number,
 			required: true
 		},
-		adoptable: {
+		for_sale: {
 			type: Boolean,
 			required: true
 		},
@@ -30,7 +24,7 @@ const petSchema = new mongoose.Schema(
 	},
 	{
 		timestamps: true,
-		// since we're adding virtuals to our pet model
+		// since we're adding virtuals to our car model
 		// we need to tell express to include them when we want them
 		toObject: { virtuals: true },
 		toJSON: { virtuals: true }
@@ -40,4 +34,4 @@ const petSchema = new mongoose.Schema(
 // virtuals go here
 // remember these are virtual properties, that use existing data, to add a property whenever we retrieve these documents.
 
-module.exports = mongoose.model('Pet', petSchema)
+module.exports = mongoose.model('Car', carSchema)
