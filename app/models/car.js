@@ -9,6 +9,10 @@ const carSchema = new mongoose.Schema(
 		},
 		
 		model: {
+			type: String,
+			required: true
+		},
+		year: {
 			type: Number,
 			required: true
 		},
@@ -18,8 +22,8 @@ const carSchema = new mongoose.Schema(
 		},
 		owner: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
-			required: true,
+			ref: 'User'
+			
 		},
 	},
 	{
@@ -33,5 +37,10 @@ const carSchema = new mongoose.Schema(
 
 // virtuals go here
 // remember these are virtual properties, that use existing data, to add a property whenever we retrieve these documents.
+carSchema.virtual('fullTitle').get(function(){
 
+return `${this.name} model: ${this.model}`
+
+
+})
 module.exports = mongoose.model('Car', carSchema)
