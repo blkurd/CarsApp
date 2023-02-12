@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-
+const coverSchema = require('./cover')
 const carSchema = new mongoose.Schema(
 	{
 		name: {
@@ -20,6 +20,7 @@ const carSchema = new mongoose.Schema(
 			type: Boolean,
 			required: true
 		},
+		covers: [coverSchema],
 		owner: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User'

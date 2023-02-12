@@ -30,8 +30,9 @@ const router = express.Router()
 // INDEX
 // GET /cars
 // requireToken is middleware that protects any route it's a part of.
-router.get('/cars', requireToken, (req, res, next) => {
+router.get('/cars', (req, res, next) => {
 	Car.find()
+	    .populate('owner')
 		.then((cars) => {
 			// `cars` will be an array of Mongoose documents
 			// we want to convert each one to a POJO, so we use `.map` to
@@ -46,9 +47,10 @@ router.get('/cars', requireToken, (req, res, next) => {
 
 // SHOW
 // GET /cars/5a7db6c74d55bc51bdf39793
-router.get('/cars/:id', requireToken, (req, res, next) => {
+router.get('/cars/:id', (req, res, next) => {
 	// req.params.id will be set based on the `:id` in the route
 	Car.findById(req.params.id)
+	    .populate('owner')
 		.then(handle404)
 		// if `findById` is succesful, respond with 200 and "car" JSON
 		.then((car) => res.status(200).json({ car: car.toObject() }))
